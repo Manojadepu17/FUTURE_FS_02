@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { connectDB } = require('./config/db');
 const { apiRateLimiter } = require('./middleware/rateLimiter');
 
@@ -65,13 +66,24 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    message: 'Route not found' 
+// Serve React build in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  
+  // Serve React app for any non-API routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
   });
-});
+} else {
+  // 404 handler for development
+  app.use((req, res) => {
+    res.status(404).json({ 
+      success: false, 
+      message: 'Route not found' 
+    });
+  });
+}
 
 // Global error handler
 app.use((err, req, res, next) => {

@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// In production, API calls go to same origin
+// In development, use environment variable or localhost
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? '/api' 
+  : (process.env.REACT_APP_API_URL || 'http://localhost:5000/api');
 
 /**
  * API Service

@@ -7,6 +7,14 @@ A professional, full-stack CRM web application for managing customer leads with 
 ![MongoDB](https://img.shields.io/badge/Database-MongoDB-brightgreen)
 ![JWT](https://img.shields.io/badge/Auth-JWT-orange)
 
+## 🚀 Deploy Your Own
+
+Want to get a **public live URL** to share on LinkedIn? 
+
+👉 **[Quick Deploy Guide](QUICK_DEPLOY.md)** (5 minutes) | **[Detailed Deployment](DEPLOYMENT.md)**
+
+---
+
 ## ✨ Features
 
 ### 🔐 Authentication System
