@@ -1,0 +1,11 @@
+# Cyclic Backend Configuration
+# This file tells Cyclic how to run your app
+
+[build]
+command = "cd server && npm install && cd ../client && npm install && npm run build"
+
+[start]
+command = "cd server && node server.js"
+
+[env]
+NODE_ENV = "production"
