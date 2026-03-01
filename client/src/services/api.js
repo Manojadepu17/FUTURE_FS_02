@@ -4,7 +4,7 @@ import axios from 'axios';
 // In development, use localhost
 const API_URL = process.env.REACT_APP_API_URL || 
   (process.env.NODE_ENV === 'production' 
-    ? 'https://your-backend.glitch.me/api' 
+    ? 'https://your-backend.northflank.app/api' 
     : 'http://localhost:5000/api');
 
 /**
