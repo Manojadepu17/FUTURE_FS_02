@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Mini CRM System for Lead Management",
   "scripts": {
-    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
-    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\"",
-    "server": "cd server && npm run dev",
-    "client": "cd client && npm start",
-    "build": "cd client && npm run build",
-    "seed": "cd server && npm run seed",
-    "start": "cd server && npm start",
+    "install-all": "npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm start --prefix client\"",
+    "server": "npm run dev --prefix server",
+    "client": "npm start --prefix client",
+    "build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "seed": "npm run seed --prefix server",
+    "start": "npm start --prefix server",
     "deploy": "npm run build && npm start"
   },
   "keywords": [
