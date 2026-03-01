@@ -1,0 +1,26 @@
+{
+  "install": "npm install",
+  "start": "node server.js",
+  "watch": {
+    "ignore": [
+      "\\.git"
+    ],
+    "install": {
+      "include": [
+        "^package\\.json$",
+        "^.env$"
+      ]
+    },
+    "restart": {
+      "exclude": [
+        "^public/",
+        "^dist/"
+      ],
+      "include": [
+        "\\.js$",
+        "\\.json"
+      ]
+    },
+    "throttle": 100
+  }
+}
