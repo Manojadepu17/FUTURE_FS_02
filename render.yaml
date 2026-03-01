@@ -25,11 +25,3 @@ services:
         generateValue: true
       - key: CLIENT_URL
         value: https://mini-crm.onrender.com
-
-databases:
-  # MySQL Database
-  - name: mini-crm-db
-    region: oregon
-    plan: free
-    databaseName: mini_crm
-    user: mini_crm_user
