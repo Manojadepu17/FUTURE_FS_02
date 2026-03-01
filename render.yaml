@@ -4,8 +4,8 @@ services:
     name: mini-crm
     env: node
     region: oregon
-    buildCommand: npm run build
-    startCommand: npm start
+    buildCommand: bash build.sh
+    startCommand: cd server && npm start
     envVars:
       - key: NODE_ENV
         value: production
