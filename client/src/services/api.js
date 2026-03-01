@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-// In production, use backend API URL from environment variable
-// In development, use localhost
-const API_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' 
-    ? 'https://your-backend.northflank.app/api' 
-    : 'http://localhost:5000/api');
+// API URL - in production use same origin (Vercel), in development use localhost
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? '/api' 
+  : 'http://localhost:5000/api';
 
 /**
  * API Service
