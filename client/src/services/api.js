@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-// API URL - in production use same origin (Vercel), in development use localhost
-const API_URL = process.env.NODE_ENV === 'production' 
-  ? '/api' 
-  : 'http://localhost:5000/api';
+// API URL - check for env variable first, then fallback
+const API_URL = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? '/api' 
+    : 'http://localhost:5000/api');
 
 /**
  * API Service
