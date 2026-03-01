@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-// In production, API calls go to same origin
-// In development, use environment variable or localhost
+// In production, API calls go to same origin (Render serves both frontend & backend)
+// In development, use localhost
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api' 
-  : (process.env.REACT_APP_API_URL || 'http://localhost:5000/api');
+  : 'http://localhost:5000/api';
 
 /**
  * API Service
