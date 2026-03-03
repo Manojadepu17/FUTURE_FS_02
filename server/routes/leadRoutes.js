@@ -12,6 +12,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  */
 router.get('/', authMiddleware, async (req, res) => {
   try {
+    console.log('📊 Fetching leads for admin:', req.admin?.email);
     const { status, search, sortBy = 'createdAt', order = 'DESC' } = req.query;
 
     // Build query
@@ -34,16 +35,18 @@ router.get('/', authMiddleware, async (req, res) => {
       order: [[sortBy, order.toUpperCase()]]
     });
 
+    console.log(`✅ Found ${leads.length} leads`);
     res.json({
       success: true,
       count: leads.length,
       leads
     });
   } catch (error) {
-    console.error('Get leads error:', error);
+    console.error('❌ Get leads error:', error);
     res.status(500).json({ 
       success: false, 
-      message: 'Error fetching leads' 
+      message: 'Error fetching leads',
+      error: error.message 
     });
   }
 });
