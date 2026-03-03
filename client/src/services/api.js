@@ -1,13 +1,9 @@
 import axios from 'axios';
 
-// API URL - check for env variable first, then fallback
-const API_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' 
-    ? '/api' 
-    : 'http://localhost:5000/api');
+// API URL - Always use /api in production (same domain)
+const API_URL = '/api';
 
 console.log('🔧 API Configuration:', {
-  REACT_APP_API_URL: process.env.REACT_APP_API_URL,
   NODE_ENV: process.env.NODE_ENV,
   API_URL: API_URL
 });
