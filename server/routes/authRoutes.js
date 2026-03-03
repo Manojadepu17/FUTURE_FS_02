@@ -20,9 +20,12 @@ router.post(
   ],
   async (req, res) => {
     try {
+      console.log('🔐 Login attempt:', req.body.email);
+      
       // Validate input
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.log('❌ Validation errors:', errors.array());
         return res.status(400).json({ 
           success: false, 
           errors: errors.array() 
@@ -30,24 +33,34 @@ router.post(
       }
 
       const { email, password } = req.body;
+      console.log('📧 Looking for admin with email:', email);
 
       // Check if admin exists
       const admin = await Admin.findOne({ where: { email } });
       if (!admin) {
+        console.log('❌ Admin not found for email:', email);
         return res.status(401).json({ 
           success: false, 
           message: 'Invalid credentials' 
         });
       }
 
+      console.log('✅ Admin found:', admin.email);
+      console.log('🔑 Comparing password...');
+
       // Verify password
       const isMatch = await admin.comparePassword(password);
+      console.log('🔑 Password match:', isMatch);
+      
       if (!isMatch) {
+        console.log('❌ Password mismatch');
         return res.status(401).json({ 
           success: false, 
           message: 'Invalid credentials' 
         });
       }
+
+      console.log('✅ Login successful for:', admin.email);
 
       // Generate JWT token
       const token = jwt.sign(
@@ -70,7 +83,7 @@ router.post(
         }
       });
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
       res.status(500).json({ 
         success: false, 
         message: 'Server error during login' 
