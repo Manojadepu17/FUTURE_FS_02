@@ -103,6 +103,83 @@ app.get('/api/check-database', async (req, res) => {
   }
 });
 
+// Add sample leads endpoint
+app.post('/api/seed-leads', async (req, res) => {
+  try {
+    const Lead = require('./models/Lead');
+    
+    console.log('📝 Adding sample leads...');
+    
+    // Check if leads already exist
+    const existingLeads = await Lead.count();
+    if (existingLeads > 0) {
+      return res.json({
+        success: true,
+        message: `Database already has ${existingLeads} leads`,
+        count: existingLeads
+      });
+    }
+    
+    const sampleLeads = [
+      {
+        name: 'John Smith',
+        email: 'john.smith@example.com',
+        phone: '+1234567890',
+        source: 'Website',
+        status: 'new',
+        notes: 'Interested in our premium package'
+      },
+      {
+        name: 'Sarah Johnson',
+        email: 'sarah.j@example.com',
+        phone: '+1234567891',
+        source: 'LinkedIn',
+        status: 'contacted',
+        notes: 'Follow up next week'
+      },
+      {
+        name: 'Mike Williams',
+        email: 'mike.w@example.com',
+        phone: '+1234567892',
+        source: 'Referral',
+        status: 'converted',
+        notes: 'Successfully closed the deal'
+      },
+      {
+        name: 'Emily Davis',
+        email: 'emily.d@example.com',
+        phone: '+1234567893',
+        source: 'Website',
+        status: 'new',
+        notes: 'Requested product demo'
+      },
+      {
+        name: 'Robert Brown',
+        email: 'robert.b@example.com',
+        phone: '+1234567894',
+        source: 'Other',
+        status: 'contacted',
+        notes: 'Sent pricing details'
+      }
+    ];
+    
+    await Lead.bulkCreate(sampleLeads);
+    console.log('✅ Sample leads created');
+    
+    res.json({
+      success: true,
+      message: 'Sample leads added successfully!',
+      count: sampleLeads.length
+    });
+  } catch (error) {
+    console.error('Seed leads error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Temporary seed endpoint for initial setup (remove after first use)
 app.post('/api/setup-database', async (req, res) => {
   try {
