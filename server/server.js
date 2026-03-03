@@ -66,6 +66,43 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Diagnostic endpoint to check database status
+app.get('/api/check-database', async (req, res) => {
+  try {
+    const Admin = require('./models/Admin');
+    const { sequelize } = require('./config/db');
+    
+    console.log('🔍 Checking database...');
+    await sequelize.authenticate();
+    console.log('✅ Database connected');
+    
+    const admins = await Admin.findAll({
+      attributes: ['id', 'username', 'email', 'createdAt']
+    });
+    
+    console.log(`Found ${admins.length} admin users`);
+    
+    res.json({
+      success: true,
+      connected: true,
+      adminCount: admins.length,
+      admins: admins.map(a => ({
+        id: a.id,
+        username: a.username,
+        email: a.email,
+        createdAt: a.createdAt
+      }))
+    });
+  } catch (error) {
+    console.error('Database check error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      details: error.toString()
+    });
+  }
+});
+
 // Temporary seed endpoint for initial setup (remove after first use)
 app.post('/api/setup-database', async (req, res) => {
   try {
