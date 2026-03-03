@@ -16,6 +16,7 @@ const ProtectedRoute = ({ children }) => {
 
 /**
  * Main App Component
+ * Updated: 2026-03-03 13:00 - Force clean rebuild
  */
 function App() {
   return (
