@@ -69,30 +69,38 @@ app.get('/api/health', (req, res) => {
 // Temporary seed endpoint for initial setup (remove after first use)
 app.post('/api/setup-database', async (req, res) => {
   try {
+    console.log('🌱 Starting database setup...');
     const Admin = require('./models/Admin');
     const Lead = require('./models/Lead');
     const { sequelize } = require('./config/db');
 
-    // Check if admin already exists
+    console.log('📊 Testing database connection...');
+    await sequelize.authenticate();
+    console.log('✅ Database connected successfully');
+
+    console.log('🔍 Checking for existing admin...');
     const existingAdmin = await Admin.findOne({ where: { email: 'admin@minicrm.com' } });
     if (existingAdmin) {
+      console.log('⚠️  Admin already exists');
       return res.status(400).json({ 
         success: false, 
         message: 'Database already seeded. Admin user exists.' 
       });
     }
 
-    // Sync database (create tables if they don't exist)
+    console.log('🔨 Syncing database tables...');
     await sequelize.sync();
+    console.log('✅ Tables synced');
 
-    // Create admin user
+    console.log('👤 Creating admin user...');
     await Admin.create({
       username: 'admin',
       email: 'admin@minicrm.com',
       password: 'admin123'
     });
+    console.log('✅ Admin created');
 
-    // Create sample leads
+    console.log('📝 Creating sample leads...');
     const sampleLeads = [
       {
         name: 'John Smith',
@@ -121,7 +129,9 @@ app.post('/api/setup-database', async (req, res) => {
     ];
 
     await Lead.bulkCreate(sampleLeads);
+    console.log('✅ Sample leads created');
 
+    console.log('🎉 Database setup complete!');
     res.json({ 
       success: true, 
       message: 'Database seeded successfully!',
@@ -131,11 +141,17 @@ app.post('/api/setup-database', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Seed error:', error);
+    console.error('❌ SEED ERROR:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     res.status(500).json({ 
       success: false, 
       message: 'Error seeding database',
-      error: error.message 
+      error: error.message,
+      details: error.toString()
     });
   }
 });
