@@ -11,6 +11,7 @@ import './Dashboard.css';
 /**
  * Dashboard Page Component
  * Main admin panel for lead management
+ * Updated: 2026-03-03 - Added detailed logging
  */
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -39,10 +40,14 @@ const Dashboard = () => {
   // Fetch functions with useCallback to prevent unnecessary re-renders
   const fetchLeads = useCallback(async () => {
     try {
+      console.log('🔄 Fetching leads with filters:', filters);
       const response = await leadsAPI.getAll(filters);
+      console.log('✅ Leads fetched:', response.data);
       setLeads(response.data.leads);
     } catch (error) {
-      showToast('Error fetching leads', 'error');
+      console.error('❌ Error fetching leads:', error);
+      console.error('Error details:', error.response?.data || error.message);
+      showToast(error.response?.data?.message || 'Error fetching leads', 'error');
     } finally {
       setLoading(false);
     }
@@ -50,10 +55,13 @@ const Dashboard = () => {
 
   const fetchStats = useCallback(async () => {
     try {
+      console.log('📊 Fetching stats...');
       const response = await leadsAPI.getStats();
+      console.log('✅ Stats fetched:', response.data);
       setStats(response.data.stats);
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error('❌ Error fetching stats:', error);
+      console.error('Error details:', error.response?.data || error.message);
     }
   }, []);
 

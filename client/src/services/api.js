@@ -6,6 +6,12 @@ const API_URL = process.env.REACT_APP_API_URL ||
     ? '/api' 
     : 'http://localhost:5000/api');
 
+console.log('🔧 API Configuration:', {
+  REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+  NODE_ENV: process.env.NODE_ENV,
+  API_URL: API_URL
+});
+
 /**
  * API Service
  * Centralized API calls with authentication
@@ -21,25 +27,33 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+    console.log('📤 API Request:', config.method.toUpperCase(), config.url);
+    console.log('🔑 Token present:', !!token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
+    console.error('❌ Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
 
 // Handle response errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('📥 API Response:', response.config.url, response.status);
+    return response;
+  },
   (error) => {
+    console.error('❌ API Error:', error.config?.url, error.response?.status, error.message);
     if (error.response?.status === 401) {
       // Token expired or invalid
+      console.log('🚪 Unauthorized - redirecting to login');
       localStorage.removeItem('token');
       localStorage.removeItem('admin');
-      window.location.href = '/login';
+      window.location.href = '/login';  
     }
     return Promise.reject(error);
   }
