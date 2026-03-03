@@ -66,6 +66,80 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Temporary seed endpoint for initial setup (remove after first use)
+app.post('/api/setup-database', async (req, res) => {
+  try {
+    const Admin = require('./models/Admin');
+    const Lead = require('./models/Lead');
+    const { sequelize } = require('./config/db');
+
+    // Check if admin already exists
+    const existingAdmin = await Admin.findOne({ where: { email: 'admin@minicrm.com' } });
+    if (existingAdmin) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Database already seeded. Admin user exists.' 
+      });
+    }
+
+    // Sync database (create tables if they don't exist)
+    await sequelize.sync();
+
+    // Create admin user
+    await Admin.create({
+      username: 'admin',
+      email: 'admin@minicrm.com',
+      password: 'admin123'
+    });
+
+    // Create sample leads
+    const sampleLeads = [
+      {
+        name: 'John Smith',
+        email: 'john.smith@example.com',
+        phone: '+1234567890',
+        source: 'Website',
+        status: 'new',
+        notes: 'Interested in our premium package'
+      },
+      {
+        name: 'Sarah Johnson',
+        email: 'sarah.j@example.com',
+        phone: '+1234567891',
+        source: 'LinkedIn',
+        status: 'contacted',
+        notes: 'Follow up next week'
+      },
+      {
+        name: 'Mike Williams',
+        email: 'mike.w@example.com',
+        phone: '+1234567892',
+        source: 'Referral',
+        status: 'converted',
+        notes: 'Successfully closed the deal'
+      }
+    ];
+
+    await Lead.bulkCreate(sampleLeads);
+
+    res.json({ 
+      success: true, 
+      message: 'Database seeded successfully!',
+      credentials: {
+        email: 'admin@minicrm.com',
+        password: 'admin123'
+      }
+    });
+  } catch (error) {
+    console.error('Seed error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error seeding database',
+      error: error.message 
+    });
+  }
+});
+
 // Serve React build in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
