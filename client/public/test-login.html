@@ -103,14 +103,25 @@
                 
                 if (response.ok) {
                     resultDiv.className = 'result success';
+                    
+                    // Store credentials
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('admin', JSON.stringify(data.admin));
+                    
                     resultDiv.innerHTML = `
                         <h3>✅ Login Successful!</h3>
                         <p><strong>Admin:</strong> ${data.admin.username}</p>
                         <p><strong>Email:</strong> ${data.admin.email}</p>
-                        <p><strong>Token:</strong></p>
-                        <pre>${data.token}</pre>
-                        <button onclick="goToDashboard('${data.token}', '${JSON.stringify(data.admin).replace(/'/g, "\\'")}')">Go to Dashboard</button>
+                        <p style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
+                            <strong>✨ You're now logged in!</strong><br>
+                            Redirecting to dashboard in 2 seconds...
+                        </p>
                     `;
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 2000);
                 } else {
                     resultDiv.className = 'result error';
                     resultDiv.innerHTML = `
@@ -127,12 +138,6 @@
                 `;
             }
         });
-        
-        function goToDashboard(token, adminStr) {
-            localStorage.setItem('token', token);
-            localStorage.setItem('admin', adminStr);
-            window.location.href = '/dashboard';
-        }
     </script>
 </body>
 </html>
