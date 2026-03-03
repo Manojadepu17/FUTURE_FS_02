@@ -8,6 +8,7 @@ import './Login.css';
 /**
  * Login Page Component
  * Handles admin authentication
+ * Updated: March 3, 2026 - Force rebuild
  */
 const Login = () => {
   const navigate = useNavigate();
