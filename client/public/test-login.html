@@ -52,6 +52,11 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        .meta {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
         pre {
             background: #f8f9fa;
             padding: 10px;
@@ -64,6 +69,7 @@
     <div class="container">
         <h1>🔐 CRM Login Test</h1>
         <p>Test the backend API directly</p>
+        <p class="meta" id="metaInfo"></p>
         
         <form id="loginForm">
             <label>Email:</label>
@@ -80,6 +86,9 @@
 
     <script>
         const API_BASE_URL = 'https://future-fs-02-qsr7.onrender.com/api';
+        const PAGE_VERSION = 'v3-2026-03-08';
+
+        document.getElementById('metaInfo').textContent = `Build ${PAGE_VERSION} | API: ${API_BASE_URL}`;
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -95,8 +104,10 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/auth/login`, {
                     method: 'POST',
+                    cache: 'no-store',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({ email, password })
                 });
@@ -145,6 +156,7 @@
                 resultDiv.innerHTML = `
                     <h3>❌ Network Error</h3>
                     <p>${error.message}</p>
+                    <p><strong>Tip:</strong> Open <code>/test-login.html?v=3</code> and hard refresh (Ctrl+F5).</p>
                 `;
             }
         });
