@@ -79,6 +79,8 @@
     </div>
 
     <script>
+        const API_BASE_URL = 'https://future-fs-02-qsr7.onrender.com/api';
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -91,15 +93,23 @@
             resultDiv.innerHTML = '⏳ Testing login...';
             
             try {
-                const response = await fetch('/api/auth/login', {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ email, password })
                 });
-                
-                const data = await response.json();
+
+                const rawBody = await response.text();
+                let data = {};
+                if (rawBody) {
+                    try {
+                        data = JSON.parse(rawBody);
+                    } catch (parseError) {
+                        data = { message: `Non-JSON response: ${rawBody.substring(0, 200)}` };
+                    }
+                }
                 
                 if (response.ok) {
                     resultDiv.className = 'result success';
@@ -126,7 +136,7 @@
                     resultDiv.className = 'result error';
                     resultDiv.innerHTML = `
                         <h3>❌ Login Failed</h3>
-                        <p>${data.message || 'Unknown error'}</p>
+                        <p>${data.message || `HTTP ${response.status}`}</p>
                         <pre>${JSON.stringify(data, null, 2)}</pre>
                     `;
                 }
