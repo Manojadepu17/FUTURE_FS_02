@@ -195,10 +195,31 @@ app.post('/api/setup-database', async (req, res) => {
     console.log('🔍 Checking for existing admin...');
     const existingAdmin = await Admin.findOne({ where: { email: 'admin@crm.com' } });
     if (existingAdmin) {
-      console.log('⚠️  Admin already exists');
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Database already seeded. Admin user exists.' 
+      console.log('⚠️  Admin already exists with updated email');
+      return res.json({
+        success: true,
+        message: 'Database already configured.',
+        credentials: {
+          email: 'admin@crm.com',
+          password: 'admin123'
+        }
+      });
+    }
+
+    // Backward compatibility: migrate older seeded admin email if present.
+    const legacyAdmin = await Admin.findOne({ where: { email: 'admin@minicrm.com' } });
+    if (legacyAdmin) {
+      console.log('🔄 Migrating legacy admin email to admin@crm.com...');
+      legacyAdmin.email = 'admin@crm.com';
+      await legacyAdmin.save();
+      console.log('✅ Legacy admin migrated');
+      return res.json({
+        success: true,
+        message: 'Legacy admin migrated successfully.',
+        credentials: {
+          email: 'admin@crm.com',
+          password: 'admin123'
+        }
       });
     }
 

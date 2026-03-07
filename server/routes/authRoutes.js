@@ -36,7 +36,18 @@ router.post(
       console.log('📧 Looking for admin with email:', email);
 
       // Check if admin exists
-      const admin = await Admin.findOne({ where: { email } });
+      let admin = await Admin.findOne({ where: { email } });
+      if (!admin && email === 'admin@crm.com') {
+        // Backward compatibility for deployments seeded with the old demo email.
+        const legacyAdmin = await Admin.findOne({ where: { email: 'admin@minicrm.com' } });
+        if (legacyAdmin) {
+          legacyAdmin.email = 'admin@crm.com';
+          await legacyAdmin.save();
+          admin = legacyAdmin;
+          console.log('🔄 Migrated legacy admin email during login');
+        }
+      }
+
       if (!admin) {
         console.log('❌ Admin not found for email:', email);
         return res.status(401).json({ 
