@@ -106,7 +106,7 @@ After deployment, you need to seed the database with initial admin user:
    ```
 
 This creates an admin account:
-- **Email**: `admin@minicrm.com`
+- **Email**: `admin@crm.com`
 - **Password**: `admin123`
 
 **⚠️ Important**: Change this password after first login!
@@ -116,7 +116,7 @@ This creates an admin account:
 Your CRM is now live at: `https://mini-crm.onrender.com` (or your custom name)
 
 **Default Login Credentials:**
-- Email: `admin@minicrm.com`
+- Email: `admin@crm.com`
 - Password: `admin123`
 
 ---
@@ -202,7 +202,7 @@ Once deployed, you can share your project:
    📂 GitHub: https://github.com/YOUR_USERNAME/mini-crm
    
    Login credentials:
-   Email: admin@minicrm.com
+   Email: admin@crm.com
    Password: admin123
    
    #WebDevelopment #React #NodeJS #FullStack #CRM

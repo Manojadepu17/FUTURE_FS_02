@@ -68,7 +68,7 @@ cd server && npm run seed
 `https://your-app-name.onrender.com`
 
 **Login:**
-- Email: `admin@minicrm.com`
+- Email: `admin@crm.com`
 - Password: `admin123`
 
 ---

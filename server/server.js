@@ -193,7 +193,7 @@ app.post('/api/setup-database', async (req, res) => {
     console.log('✅ Database connected successfully');
 
     console.log('🔍 Checking for existing admin...');
-    const existingAdmin = await Admin.findOne({ where: { email: 'admin@minicrm.com' } });
+    const existingAdmin = await Admin.findOne({ where: { email: 'admin@crm.com' } });
     if (existingAdmin) {
       console.log('⚠️  Admin already exists');
       return res.status(400).json({ 
@@ -209,7 +209,7 @@ app.post('/api/setup-database', async (req, res) => {
     console.log('👤 Creating admin user...');
     await Admin.create({
       username: 'admin',
-      email: 'admin@minicrm.com',
+      email: 'admin@crm.com',
       password: 'admin123'
     });
     console.log('✅ Admin created');
@@ -250,7 +250,7 @@ app.post('/api/setup-database', async (req, res) => {
       success: true, 
       message: 'Database seeded successfully!',
       credentials: {
-        email: 'admin@minicrm.com',
+        email: 'admin@crm.com',
         password: 'admin123'
       }
     });

@@ -52,7 +52,7 @@ CLIENT_URL=https://your-site-name.netlify.app
 Visit your Netlify URL: `https://your-site-name.netlify.app`
 
 Default login credentials:
-- **Email:** `admin@minicrm.com`
+- **Email:** `admin@crm.com`
 - **Password:** `admin123`
 
 ---
