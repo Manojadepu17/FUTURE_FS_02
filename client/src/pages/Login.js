@@ -40,7 +40,22 @@ const Login = () => {
       login(token, admin);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      console.error('Login error:', err);
+      
+      // Handle specific error messages
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        errorMessage = 'Connection timeout. The server may be starting up (Render free tier). Please wait a moment and try again.';
+      } else if (err.message?.includes('Network Error') || err.message?.includes('connect')) {
+        errorMessage = 'Unable to connect to the server. Please check your internet connection.';
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -17,7 +17,9 @@ const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  timeout: 30000, // 30 second timeout
+  timeoutErrorMessage: 'Request timed out. The server may be waking up. Please try again.'
 });
 
 // Add token to requests
@@ -45,6 +47,19 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error('❌ API Error:', error.config?.url, error.response?.status, error.message);
+    
+    // Handle timeout specifically
+    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+      console.error('⏱️ Request timeout - server may be slow or unresponsive');
+      error.message = 'Request timed out. The server may be waking up from sleep. Please try again in a moment.';
+    }
+    
+    // Handle network errors
+    if (!error.response && error.message === 'Network Error') {
+      console.error('🌐 Network error - unable to reach server');
+      error.message = 'Unable to connect to the server. Please check your internet connection.';
+    }
+    
     if (error.response?.status === 401) {
       // Token expired or invalid
       console.log('🚪 Unauthorized - redirecting to login');
