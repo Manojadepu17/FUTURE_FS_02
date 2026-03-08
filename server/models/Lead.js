@@ -15,7 +15,7 @@ const Lead = sequelize.define('Lead', {
   },
   // Lead's full name
   name: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(191),
     allowNull: false,
     validate: {
       notEmpty: {
@@ -26,7 +26,7 @@ const Lead = sequelize.define('Lead', {
   },
   // Lead's email address
   email: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(191),
     allowNull: false,
     validate: {
       isEmail: {
