@@ -39,14 +39,19 @@ echo ""
 echo "================================================"
 echo "🏗️ Building fresh React client..."
 echo "================================================"
-CI=false npm run build
+if CI=false npm run build; then
+  echo ""
+  echo "================================================"
+  echo "✅ Frontend build completed successfully!"
+  echo "================================================"
+  echo "📦 Build contents:"
+  ls -la build 2>/dev/null || echo "Checking build folder..."
+else
+  echo ""
+  echo "⚠️ Frontend build failed, but continuing (API-only mode)"
+  echo "Backend API will still be available"
+fi
 
-echo ""
-echo "================================================"
-echo "✅ Build completed successfully!"
-echo "================================================"
-echo "📦 Build contents:"
-ls -la build 2>/dev/null || echo "Checking build folder..."
 cd ..
 
 echo ""

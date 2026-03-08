@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// API URL - Use environment variable or fallback to Render backend
-const API_URL = process.env.REACT_APP_API_URL || 'https://future-fs-02-qsr7.onrender.com/api';
+// API URL - use explicit env var or same-origin backend for unified deployment.
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 console.log('🔧 API Configuration:', {
   NODE_ENV: process.env.NODE_ENV,

@@ -9,9 +9,11 @@ const Lead = require('./models/Lead');
  */
 const seedDatabase = async () => {
   try {
-    // Connect to MySQL
+    const dialect = (process.env.DB_DIALECT || 'sqlite').toLowerCase();
+
+    // Connect to selected database
     await sequelize.authenticate();
-    console.log('✅ Connected to MySQL');
+    console.log(`✅ Connected to ${dialect.toUpperCase()}`);
 
     // Sync database (create tables if they don't exist)
     await sequelize.sync({ force: true }); // force: true will drop and recreate tables

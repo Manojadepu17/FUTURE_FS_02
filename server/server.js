@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { connectDB } = require('./config/db');
 const { apiRateLimiter } = require('./middleware/rateLimiter');
 
@@ -12,27 +13,36 @@ const leadRoutes = require('./routes/leadRoutes');
 // Initialize Express app
 const app = express();
 
-// Connect to MySQL
+// Connect to database
 connectDB();
 
 // Security: CORS configuration
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'http://localhost:5000',
   'https://future-fs-02-two-teal.vercel.app',
   process.env.CLIENT_URL
 ].filter(Boolean);
 
+// Allow all vercel.app and netlify.app domains in development
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // Allow requests with no origin
+  if (allowedOrigins.includes(origin)) return true;
+  // Allow any Vercel or Netlify preview deployments
+  if (origin.endsWith('.vercel.app')) return true;
+  if (origin.endsWith('.netlify.app')) return true;
+  return false;
+};
+
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
     } else {
       console.log('❌ CORS blocked origin:', origin);
       console.log('✅ Allowed origins:', allowedOrigins);
+      console.log('✅ Also allowing: *.vercel.app, *.netlify.app');
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -309,21 +319,36 @@ app.post('/api/setup-database', async (req, res) => {
   }
 });
 
-// Serve React build in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, '../client/build')));
-  
+// Serve React build in production only when artifacts exist.
+const clientBuildPath = path.join(__dirname, '../client/build');
+const clientIndexPath = path.join(clientBuildPath, 'index.html');
+const hasClientBuild = fs.existsSync(clientIndexPath);
+
+if (process.env.NODE_ENV === 'production' && hasClientBuild) {
+  app.use(express.static(clientBuildPath));
+
   // Serve React app for any non-API routes
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    res.sendFile(clientIndexPath);
   });
 } else {
-  // 404 handler for development
+  if (process.env.NODE_ENV === 'production' && !hasClientBuild) {
+    console.warn(`⚠️ Frontend build not found at ${clientIndexPath}. Serving API only.`);
+  }
+
+  app.get('/', (req, res) => {
+    res.json({
+      success: true,
+      message: 'Mini CRM API is running',
+      frontendServed: hasClientBuild
+    });
+  });
+
+  // 404 handler
   app.use((req, res) => {
-    res.status(404).json({ 
-      success: false, 
-      message: 'Route not found' 
+    res.status(404).json({
+      success: false,
+      message: 'Route not found'
     });
   });
 }
